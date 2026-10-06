@@ -274,7 +274,15 @@ section { position: relative; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* Top-aligned and scrollable: the links start below the header and can never be pushed above the viewport.
+     The auto margins on the first/last link still centre the list when there is spare height. */
+  justify-content: flex-start;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(var(--nav-height) + 16px) 20px calc(32px + env(safe-area-inset-bottom, 0px));
   gap: 26px;
   transform: translateY(-100%);
   visibility: hidden;
@@ -285,6 +293,18 @@ section { position: relative; }
   font-family: var(--font-heading);
   font-size: 1.7rem;
   color: var(--heading);
+  flex-shrink: 0;
+  text-align: center;
+}
+.mobile-menu > a:first-child { margin-top: auto; }
+.mobile-menu > a:last-child { margin-bottom: auto; }
+@media (max-height: 760px) {
+  .mobile-menu { gap: 18px; }
+  .mobile-menu a { font-size: 1.5rem; }
+}
+@media (max-height: 560px) {
+  .mobile-menu { gap: 12px; padding-top: calc(var(--nav-height) + 8px); }
+  .mobile-menu a { font-size: 1.3rem; }
 }
 .mobile-menu .btn { margin-top: 10px; }
 
@@ -298,8 +318,9 @@ section { position: relative; }
    ========================================================================== */
 .hero {
   position: relative;
-  height: 100vh;
-  min-height: 640px;
+  /* grows instead of letting the copy slide under the fixed header on short/narrow windows */
+  min-height: max(640px, 100vh);
+  padding-top: calc(var(--nav-height) + 24px);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -383,8 +404,8 @@ section { position: relative; }
 /* page (interior) hero — smaller banner for sub-pages */
 .page-hero {
   position: relative;
-  height: 58vh;
-  min-height: 380px;
+  min-height: max(380px, 58vh);
+  padding-top: calc(var(--nav-height) + 24px);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
